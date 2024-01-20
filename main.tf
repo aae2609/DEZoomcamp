@@ -8,14 +8,14 @@ terraform {
 }
 
 provider "google" {
-  project     = "gifted-antonym-411815"
-  region      = "europe-west4-a"
-  credentials = "./.keys/gcp.json"
+  project     = var.project
+  region      = var.location.region
+  credentials = file(var.credentials)
 }
 
 resource "google_storage_bucket" "demo-bucket" {
-  name          = "ny-taxi-demo-bucket"
-  location      = "EU"
+  name          = var.gcs_bucket_name
+  location      = var.location.location
   force_destroy = true
 
   lifecycle_rule {
@@ -37,8 +37,7 @@ resource "google_storage_bucket" "demo-bucket" {
   }
 }
 
-
-resource "google_bigquery_dataset" "demo-dataset" {
-  dataset_id = "ny-taxi-demo-dataset"
-  location   = "EU"
+resource "google_bigquery_dataset" "demo-bq-dataset" {
+  dataset_id = var.bq_dataset_name
+  location   = var.location.location
 }
