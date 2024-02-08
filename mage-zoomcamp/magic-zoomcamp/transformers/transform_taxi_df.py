@@ -21,12 +21,16 @@ def transform(df, *args, **kwargs):
     m0 = df['passenger_count'] > 0
     m1 = df['trip_distance'] > 0
 
-    map_cols = {
-        'VendorID': 'vendor_id',
-        'RatecodeID': 'rate_code_id',
-        'PULocationID': "pickup_location_id",
-        'DOLocationID': 'drop_off_location_id',
-    }
+    # map_cols = {
+    #     'VendorID': 'vendor_id',
+    #     'RatecodeID': 'rate_code_id',
+    #     'PULocationID': "pickup_location_id",
+    #     'DOLocationID': 'drop_off_location_id',
+    # }
+    map_cols = {col: col.lower().replace(' ', '_') for col in df.columns} 
+    map_cols = {k: v for k, v in map_cols.items() if k != v}
+    print('Number of mapped column names is', len(map_cols))
+
     df = df.loc[m0 & m1]
     df = (df
         .assign(lpep_pickup_date=df.lpep_pickup_datetime.dt.date)
